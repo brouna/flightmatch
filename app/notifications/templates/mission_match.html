@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; }
+    .header { background: #1e40af; color: white; padding: 24px; border-radius: 8px 8px 0 0; }
+    .content { padding: 24px; background: #f8fafc; }
+    .mission-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0; }
+    .mission-detail { margin: 8px 0; }
+    .label { font-weight: bold; color: #64748b; }
+    .btn { display: inline-block; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 8px 8px 8px 0; }
+    .btn-accept { background: #16a34a; color: white; }
+    .btn-decline { background: #dc2626; color: white; }
+    .footer { padding: 16px 24px; background: #e2e8f0; border-radius: 0 0 8px 8px; font-size: 12px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 style="margin:0">Mission Match — FlightMatch</h1>
+    <p style="margin:4px 0 0">You've been matched to a patient transport mission</p>
+  </div>
+  <div class="content">
+    <p>Dear {{ pilot_name }},</p>
+    <p>You have been matched to the following humanitarian aviation mission. Please review the details and indicate your availability.</p>
+
+    <div class="mission-card">
+      <h2 style="margin-top:0; color: #1e40af">{{ mission_title }}</h2>
+      <div class="mission-detail"><span class="label">Route:</span> {{ origin }} → {{ destination }}</div>
+      <div class="mission-detail"><span class="label">Earliest Departure:</span> {{ earliest_departure }}</div>
+    </div>
+
+    <p><strong>Please respond within 72 hours:</strong></p>
+    <a href="{{ accept_url }}" class="btn btn-accept">✓ I Can Fly This Mission</a>
+    <a href="{{ decline_url }}" class="btn btn-decline">✗ Unavailable</a>
+
+    <p style="font-size: 13px; color: #64748b; margin-top: 24px;">
+      These links expire in 72 hours. If you have questions, please contact your mission coordinator.
+    </p>
+  </div>
+  <div class="footer">
+    FlightMatch — Humanitarian Aviation Coordination System<br>
+    This email was sent because you are a registered volunteer pilot.
+  </div>
+</body>
+</html>

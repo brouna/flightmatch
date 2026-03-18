@@ -1,0 +1,24 @@
+Mission Match — FlightMatch
+============================
+
+Dear {{ pilot_name }},
+
+You have been matched to the following humanitarian aviation mission.
+
+MISSION: {{ mission_title }}
+Route: {{ origin }} → {{ destination }}
+Earliest Departure: {{ earliest_departure }}
+
+Please respond within 72 hours:
+
+I CAN FLY THIS MISSION:
+{{ accept_url }}
+
+UNAVAILABLE:
+{{ decline_url }}
+
+These links expire in 72 hours. If you have questions, please contact your mission coordinator.
+
+---
+FlightMatch — Humanitarian Aviation Coordination System
+This email was sent because you are a registered volunteer pilot.

@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+venv/
+.venv/
+env/
+
+# Environment
+.env
+*.env.local
+
+# Database
+*.db
+*.sqlite3
+
+# ML model artifacts (large binaries — retrain locally)
+ml/models/*.joblib
+ml/models/metadata.json
+
+# Node / UI
+ui/node_modules/
+ui/dist/
+
+# Alembic
+# (keep versions/ checked in)
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+celerybeat-schedule
+.claude/
