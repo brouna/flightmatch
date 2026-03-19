@@ -41,6 +41,15 @@ async def create_pilot(
     return pilot
 
 
+@router.get("", response_model=list[PilotRead])
+async def list_pilots(
+    db: AsyncSession = Depends(get_db),
+    _: str = Depends(verify_api_key),
+):
+    result = await db.execute(select(Pilot).order_by(Pilot.name))
+    return result.scalars().all()
+
+
 @router.get("/{pilot_id}", response_model=PilotRead)
 async def get_pilot(
     pilot_id: int,
