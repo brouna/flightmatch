@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import String, Boolean, ForeignKey, DateTime, Enum, Index, func
+from sqlalchemy import String, Boolean, ForeignKey, DateTime, Index, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
 from app.database import Base
@@ -28,7 +28,7 @@ class PilotAvailability(Base):
     pilot_id: Mapped[int] = mapped_column(ForeignKey("pilots.id", ondelete="CASCADE"), nullable=False)
     start_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     end_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    source: Mapped[AvailabilitySource] = mapped_column(Enum(AvailabilitySource), nullable=False)
+    source: Mapped[AvailabilitySource] = mapped_column(String(20), nullable=False)
     is_busy: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
     calendar_uid: Mapped[str | None] = mapped_column(String(500), index=True)
 
@@ -40,7 +40,7 @@ class CalendarIntegration(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     pilot_id: Mapped[int] = mapped_column(ForeignKey("pilots.id", ondelete="CASCADE"), nullable=False)
-    provider: Mapped[CalendarProvider] = mapped_column(Enum(CalendarProvider), nullable=False)
+    provider: Mapped[CalendarProvider] = mapped_column(String(20), nullable=False)
     access_token: Mapped[str | None] = mapped_column(String(2000))   # stored encrypted
     refresh_token: Mapped[str | None] = mapped_column(String(2000))  # stored encrypted
     token_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

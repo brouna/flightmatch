@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import String, Boolean, ForeignKey, DateTime, Enum, Numeric, Text, func
+from sqlalchemy import String, Boolean, ForeignKey, DateTime, Numeric, Text, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
@@ -40,7 +40,7 @@ class MatchLog(Base):
     features_json: Mapped[dict | None] = mapped_column(JSONB)
     notification_sent: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
     pilot_response: Mapped[PilotResponse] = mapped_column(
-        Enum(PilotResponse), default=PilotResponse.no_response, server_default="no_response"
+        String(20), default=PilotResponse.no_response, server_default="no_response"
     )
     response_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 

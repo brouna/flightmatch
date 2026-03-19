@@ -67,20 +67,67 @@ async def import_historical(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.get("/model-metadata")
+async def get_model_metadata(
+    _: str = Depends(verify_api_key),
+):
+    """Return metadata for the currently deployed model."""
+    import json
+    from pathlib import Path
+    metadata_path = Path(__file__).parent.parent.parent.parent / "ml" / "models" / "metadata.json"
+    if not metadata_path.exists():
+        raise HTTPException(status_code=404, detail="No model trained yet")
+    return json.loads(metadata_path.read_text())
+
+
 @router.post("/retrain")
 async def retrain_model(
     _: str = Depends(verify_api_key),
 ):
-    """Trigger model retraining via Celery."""
-    from app.tasks.ml import retrain_model_task
+    """Trigger model retraining. Uses Celery if a worker is available, otherwise runs inline."""
     try:
-        task = retrain_model_task.delay()
-        return {"task_id": task.id, "message": "Retraining started"}
+        from app.tasks.celery_app import celery_app
+        # Ping with a short timeout — only dispatch if a worker actually responds
+        active = celery_app.control.ping(timeout=1.0)
+        if active:
+            from app.tasks.ml import retrain_model_task
+            task = retrain_model_task.delay()
+            return {"async": True, "task_id": task.id, "status": "pending"}
     except Exception:
-        # Run inline if Celery unavailable
-        from ml.train import train
-        result = train()
-        return {"message": "Retraining complete", "result": result}
+        pass
+
+    # No Celery worker available — run inline within the existing event loop.
+    # Prefer real match response data; fall back to historical flights.
+    from ml.train import _train_async
+    result = await _train_async()
+    if "error" in result:
+        from ml.train_from_historical import _train_async as _train_historical
+        result = await _train_historical()
+    return {"async": False, "status": "complete", "result": result}
+
+
+@router.get("/retrain/{task_id}")
+async def get_retrain_status(
+    task_id: str,
+    _: str = Depends(verify_api_key),
+):
+    """Poll the status of an async retraining task."""
+    try:
+        from celery.result import AsyncResult
+        from app.tasks.celery_app import celery_app
+        result = AsyncResult(task_id, app=celery_app)
+        if result.state == "PENDING":
+            return {"status": "pending"}
+        elif result.state == "STARTED":
+            return {"status": "running"}
+        elif result.state == "SUCCESS":
+            return {"status": "complete", "result": result.get()}
+        elif result.state == "FAILURE":
+            return {"status": "failed", "error": str(result.result)}
+        else:
+            return {"status": result.state.lower()}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/rules", response_model=list[MatchingRuleRead])

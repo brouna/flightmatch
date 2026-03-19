@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import String, Float, ForeignKey, Text, DateTime, Enum, Integer, ARRAY, func
+from sqlalchemy import String, Float, ForeignKey, Text, DateTime, Integer, ARRAY, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
 from app.database import Base
@@ -30,7 +30,7 @@ class Mission(Base):
     latest_departure: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     estimated_duration_h: Mapped[float] = mapped_column(Float, nullable=False)
     status: Mapped[MissionStatus] = mapped_column(
-        Enum(MissionStatus), default=MissionStatus.open, server_default="open"
+        String(20), default=MissionStatus.open, server_default="open"
     )
     coordinator_notes: Mapped[str | None] = mapped_column(Text)
     required_aircraft_type: Mapped[list[str]] = mapped_column(ARRAY(String), default=list, server_default="{}")
@@ -54,7 +54,7 @@ class MissionPassenger(Base):
     bags_weight_lbs: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     requires_oxygen: Mapped[bool] = mapped_column(default=False, server_default="false")
     mobility_equipment: Mapped[MobilityEquipment] = mapped_column(
-        Enum(MobilityEquipment), default=MobilityEquipment.none, server_default="none"
+        String(20), default=MobilityEquipment.none, server_default="none"
     )
     mobility_notes: Mapped[str | None] = mapped_column(Text)
 
