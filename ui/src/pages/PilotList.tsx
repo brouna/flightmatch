@@ -20,8 +20,8 @@ export default function PilotList() {
 
   const filtered = pilots.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.email.toLowerCase().includes(search.toLowerCase()) ||
-    p.home_airport.toLowerCase().includes(search.toLowerCase())
+    (p.email ?? '').toLowerCase().includes(search.toLowerCase()) ||
+    (p.home_airport ?? '').toLowerCase().includes(search.toLowerCase())
   )
 
   return (

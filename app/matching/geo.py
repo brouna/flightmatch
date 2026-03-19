@@ -65,8 +65,19 @@ def _load_airports() -> dict[str, tuple[float, float]]:
 
 
 def get_airport_coords(icao: str) -> Optional[tuple[float, float]]:
-    """Return (lat, lon) for an ICAO code, or None if unknown."""
-    return _load_airports().get(icao.upper())
+    """Return (lat, lon) for an ICAO code, or None if unknown.
+
+    Handles both 4-char ICAO (KBGR) and 3-char FAA (BGR) codes by
+    trying the raw code first, then prepending 'K' for US airports.
+    """
+    airports = _load_airports()
+    code = icao.upper().strip()
+    if code in airports:
+        return airports[code]
+    # Try with K prefix (FAA 3-char -> US ICAO 4-char)
+    if len(code) == 3:
+        return airports.get("K" + code)
+    return None
 
 
 def airport_distance_nm(icao1: str, icao2: str) -> Optional[float]:
