@@ -29,9 +29,14 @@ async def create_pilot(
     db: AsyncSession = Depends(get_db),
     _: str = Depends(verify_api_key),
 ):
+    from sqlalchemy.exc import IntegrityError
     pilot = Pilot(**body.model_dump())
     db.add(pilot)
-    await db.flush()
+    try:
+        await db.flush()
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail="A pilot with that email already exists")
     await db.refresh(pilot)
     return pilot
 
