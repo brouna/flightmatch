@@ -6,11 +6,13 @@ import PilotList from './pages/PilotList'
 import PilotDetail from './pages/PilotDetail'
 import HistoricalImport from './pages/HistoricalImport'
 import MLRetrain from './pages/MLRetrain'
+import MatchTest from './pages/MatchTest'
 
 const navItems = [
   { to: '/', label: 'Dashboard' },
   { to: '/missions', label: 'Missions' },
   { to: '/pilots', label: 'Pilots' },
+  { to: '/match', label: 'Pilot Match' },
   { to: '/import', label: 'Import' },
   { to: '/retrain', label: 'ML Retrain' },
 ]
@@ -55,6 +57,7 @@ export default function App() {
           <Route path="/missions/:id" element={<MissionDetail />} />
           <Route path="/pilots" element={<PilotList />} />
           <Route path="/pilots/:id" element={<PilotDetail />} />
+          <Route path="/match" element={<MatchTest />} />
           <Route path="/import" element={<HistoricalImport />} />
           <Route path="/retrain" element={<MLRetrain />} />
         </Routes>
