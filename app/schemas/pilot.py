@@ -3,9 +3,9 @@ from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class PilotCreate(BaseModel):
-    email: EmailStr
+    email: EmailStr | None = None
     name: str
-    home_airport: str
+    home_airport: str | None = None
     phone: str | None = None
     certifications: list[str] = []
     preferred_regions: list[str] = []
@@ -28,9 +28,9 @@ class PilotRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    email: str
+    email: str | None
     name: str
-    home_airport: str
+    home_airport: str | None
     phone: str | None
     certifications: list[str]
     preferred_regions: list[str]

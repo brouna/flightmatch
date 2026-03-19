@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from pydantic import BaseModel, ConfigDict
-from app.models.historical import FlightOutcome, FlightSource
+from app.models.historical import FlightType, FlightSource
 
 
 class HistoricalFlightRead(BaseModel):
@@ -14,7 +14,8 @@ class HistoricalFlightRead(BaseModel):
     flight_date: date
     distance_nm: float | None
     duration_h: float | None
+    num_passengers: int | None
     accepted: bool
-    outcome: FlightOutcome | None
+    flight_type: FlightType | None
     source: FlightSource
     created_at: datetime

@@ -8,9 +8,9 @@ class Pilot(Base):
     __tablename__ = "pilots"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
+    email: Mapped[str | None] = mapped_column(String(255), unique=True, nullable=True, index=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    home_airport: Mapped[str] = mapped_column(String(4), nullable=False)  # ICAO
+    home_airport: Mapped[str | None] = mapped_column(String(4), nullable=True)  # ICAO
     phone: Mapped[str | None] = mapped_column(String(20))
     certifications: Mapped[list[str]] = mapped_column(ARRAY(String), default=list, server_default="{}")
     preferred_regions: Mapped[list[str]] = mapped_column(ARRAY(String), default=list, server_default="{}")
