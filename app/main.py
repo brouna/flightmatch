@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
-from app.api.v1 import pilots, aircraft, missions, matches, calendar, admin
+from app.api.v1 import pilots, aircraft, missions, matches, calendar, admin, match
 
 
 @asynccontextmanager
@@ -85,6 +85,7 @@ def create_app() -> FastAPI:
     app.include_router(matches.router, prefix=prefix)
     app.include_router(calendar.router, prefix=prefix)
     app.include_router(admin.router, prefix=prefix)
+    app.include_router(match.router, prefix=prefix)
 
     @app.get("/health", tags=["health"])
     async def health():

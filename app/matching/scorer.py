@@ -59,22 +59,23 @@ def _score_with_model(candidates):
 
 
 def _score_heuristic(candidates):
-    """Weighted heuristic: (1 - ferry_dist/max) * completion_rate * region_match_boost."""
-    max_ferry = max(
-        (f.get("ferry_distance_to_origin_nm", 0) for _, f in candidates),
+    """Weighted heuristic fallback when no model is loaded."""
+    max_home_dist = max(
+        (f.get("inferred_home_dist_nm", f.get("ferry_distance_to_origin_nm", 0))
+         for _, f in candidates),
         default=1,
     ) or 1
 
     scored = []
     for pilot, feats in candidates:
-        ferry = feats.get("ferry_distance_to_origin_nm", 0)
-        completion = feats.get("completion_rate", 0.5)
-        region = feats.get("region_match", 0)
-        advance = min(feats.get("advance_notice_days", 7) / 30, 1.0)
+        home_dist = feats.get("inferred_home_dist_nm", feats.get("ferry_distance_to_origin_nm", 0))
+        route_affinity = min(
+            (feats.get("origin_flight_count", 0) + feats.get("dest_flight_count", 0)) / 10, 1.0
+        )
+        dist_score = 1.0 - (home_dist / max_home_dist)
+        type_match = feats.get("flight_type_match", feats.get("region_match", 0))
 
-        dist_score = 1.0 - (ferry / max_ferry)
-        region_boost = 1.2 if region else 1.0
-        score = dist_score * completion * region_boost * (0.5 + 0.5 * advance)
+        score = (dist_score * 0.6) + (route_affinity * 0.3) + (type_match * 0.1)
         score = max(0.0, min(1.0, score))
         scored.append((pilot, score, feats))
 
